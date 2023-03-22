@@ -8,6 +8,7 @@ from random import choice, randint
 from weapon import Weapon
 from ui import UI
 from enemy import Enemy
+from villager import Villager
 from particles import AnimationPlayer
 from magic import MagicPlayer
 from upgrade import Upgrade
@@ -80,6 +81,15 @@ class Level:
 									self.create_attack,
 									self.destroy_attack,
 									self.create_magic)
+							elif col == '200':
+								self.player = Villager(
+									"villager",
+									(x,y),
+									[self.visible_sprites,self.attackable_sprites],
+									self.obstacle_sprites,
+									self.damage_player,
+									self.trigger_death_particles,
+									self.add_exp)
 							else:
 								if col == '390': monster_name = 'bamboo'
 								elif col == '391': monster_name = 'spirit'
@@ -153,6 +163,7 @@ class Level:
 		else:
 			self.visible_sprites.update()
 			self.visible_sprites.enemy_update(self.player)
+			self.visible_sprites.villager_update(self.player)
 			self.player_attack_logic()
 		
 
@@ -189,3 +200,8 @@ class YSortCameraGroup(pygame.sprite.Group):
 		enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite,'sprite_type') and sprite.sprite_type == 'enemy']
 		for enemy in enemy_sprites:
 			enemy.enemy_update(player)
+	
+	def villager_update(self,player):
+		villager_sprites = [sprite for sprite in self.sprites() if hasattr(sprite,'sprite_type') and sprite.sprite_type == 'villager']
+		for villager in villager_sprites:
+			villager.villager_update(player)
